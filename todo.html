@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo — spashuev</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0f0f13;
+            --surface: #1a1a23;
+            --surface-hover: #22222e;
+            --surface-input: #15151d;
+            --border: #2a2a38;
+            --text: #e8e8ed;
+            --text-muted: #6e6e82;
+            --accent: #6c5ce7;
+            --accent-light: rgba(108, 92, 231, 0.15);
+            --success: #00b894;
+            --success-light: rgba(0, 184, 148, 0.12);
+            --danger: #ff6b6b;
+            --danger-light: rgba(255, 107, 107, 0.12);
+            --warning: #fdcb6e;
+        }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 20% 10%, rgba(108, 92, 231, 0.05) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 90%, rgba(0, 184, 148, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .back-link {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            transition: color 0.3s;
+            z-index: 10;
+        }
+
+        .back-link:hover { color: var(--text); }
+
+        .app {
+            width: 100%;
+            max-width: 560px;
+            margin-top: 3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .app-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .app-title {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .app-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
+
+        /* Stats bar */
+        .stats {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            flex: 1;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1rem 1.25rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'DM Mono', monospace;
+            font-size: 1.8rem;
+            font-weight: 500;
+            line-height: 1;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-number.total { color: var(--accent); }
+        .stat-number.done { color: var(--success); }
+        .stat-number.pending { color: var(--warning); }
+
+        .stat-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        /* Input area */
+        .input-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-field {
+            flex: 1;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 0.9rem 1.25rem;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.95rem;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .input-field::placeholder { color: var(--text-muted); }
+
+        .input-field:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-light);
+        }
+
+        .add-btn {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            padding: 0 1.5rem;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .add-btn:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(108, 92, 231, 0.25);
+        }
+
+        .add-btn:active { transform: translateY(1px); }
+
+        /* Filter tabs */
+        .filters {
+            display: flex;
+            gap: 4px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .filter-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            border-radius: 9px;
+            padding: 0.55rem;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover { color: var(--text); }
+
+        .filter-btn.active {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        /* Task list */
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1rem 1.25rem;
+            transition: all 0.3s ease;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideOut {
+            from { opacity: 1; transform: translateX(0); max-height: 80px; }
+            to { opacity: 0; transform: translateX(40px); max-height: 0; padding: 0; margin: 0; }
+        }
+
+        .task-item.removing {
+            animation: slideOut 0.35s ease forwards;
+        }
+
+        .task-item:hover {
+            border-color: rgba(108, 92, 231, 0.3);
+        }
+
+        .task-item.done {
+            opacity: 0.5;
+        }
+
+        .task-item.done .task-text {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        /* Custom checkbox */
+        .task-check {
+            width: 22px;
+            height: 22px;
+            min-width: 22px;
+            border: 2px solid var(--border);
+            border-radius: 7px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .task-check:hover {
+            border-color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        .task-check.checked {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .task-check.checked::after {
+            content: '✓';
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .task-text {
+            flex: 1;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .task-date {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .task-delete {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 0.2rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+            opacity: 0;
+        }
+
+        .task-item:hover .task-delete { opacity: 1; }
+
+        .task-delete:hover {
+            background: var(--danger-light);
+            color: var(--danger);
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 0.9rem;
+        }
+
+        /* Progress bar */
+        .progress-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .progress-pct {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--success);
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--success));
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+
+<a href="index.html" class="back-link">← Back to Portfolio</a>
+
+<div class="app">
+    <div class="app-header">
+        <h1 class="app-title">Todo</h1>
+        <span class="app-date" id="currentDate"></span>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-number total" id="statTotal">0</div>
+            <div class="stat-label">Total</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number done" id="statDone">0</div>
+            <div class="stat-label">Done</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number pending" id="statPending">0</div>
+            <div class="stat-label">Pending</div>
+        </div>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-header">
+            <span class="progress-label">Progress</span>
+            <span class="progress-pct" id="progressPct">0%</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <div class="input-area">
+        <input type="text" class="input-field" id="taskInput" placeholder="Add a new task..." maxlength="100">
+        <button class="add-btn" id="addBtn">Add</button>
+    </div>
+
+    <div class="filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="pending">Pending</button>
+        <button class="filter-btn" data-filter="done">Done</button>
+    </div>
+
+    <div class="task-list" id="taskList"></div>
+</div>
+
+<script>
+    const taskInput = document.getElementById('taskInput');
+    const addBtn = document.getElementById('addBtn');
+    const taskList = document.getElementById('taskList');
+    const currentDate = document.getElementById('currentDate');
+
+    let todos = JSON.parse(localStorage.getItem('spashuev-todos') || '[]');
+    let filter = 'all';
+
+    // Set current date
+    const now = new Date();
+    currentDate.textContent = now.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'short',
+        day: 'numeric'
+    });
+
+    function saveTodos() {
+        localStorage.setItem('spashuev-todos', JSON.stringify(todos));
+    }
+
+    function updateStats() {
+        const total = todos.length;
+        const done = todos.filter(t => t.done).length;
+        const pending = total - done;
+        const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+
+        document.getElementById('statTotal').textContent = total;
+        document.getElementById('statDone').textContent = done;
+        document.getElementById('statPending').textContent = pending;
+        document.getElementById('progressPct').textContent = pct + '%';
+        document.getElementById('progressFill').style.width = pct + '%';
+    }
+
+    function formatDate(dateStr) {
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    function renderTodos() {
+        const filtered = todos.filter(t => {
+            if (filter === 'pending') return !t.done;
+            if (filter === 'done') return t.done;
+            return true;
+        });
+
+        if (filtered.length === 0) {
+            const messages = {
+                all: "No tasks yet. Add your first one above!",
+                pending: "All tasks done! Nice work.",
+                done: "No completed tasks yet. Keep going!"
+            };
+            taskList.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">${filter === 'pending' ? '🎉' : '📝'}</div>
+                    <p>${messages[filter]}</p>
+                </div>
+            `;
+        } else {
+            taskList.innerHTML = filtered.map(todo => `
+                <div class="task-item ${todo.done ? 'done' : ''}" data-id="${todo.id}">
+                    <div class="task-check ${todo.done ? 'checked' : ''}" onclick="toggleTodo('${todo.id}')"></div>
+                    <span class="task-text">${escapeHtml(todo.text)}</span>
+                    <span class="task-date">${formatDate(todo.date)}</span>
+                    <button class="task-delete" onclick="deleteTodo('${todo.id}')" title="Delete">✕</button>
+                </div>
+            `).join('');
+        }
+
+        updateStats();
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function addTodo() {
+        const text = taskInput.value.trim();
+        if (!text) return;
+
+        todos.unshift({
+            id: Date.now().toString(),
+            text,
+            done: false,
+            date: new Date().toISOString()
+        });
+
+        saveTodos();
+        renderTodos();
+        taskInput.value = '';
+        taskInput.focus();
+    }
+
+    function toggleTodo(id) {
+        const todo = todos.find(t => t.id === id);
+        if (todo) {
+            todo.done = !todo.done;
+            saveTodos();
+            renderTodos();
+        }
+    }
+
+    function deleteTodo(id) {
+        const item = document.querySelector(`[data-id="${id}"]`);
+        if (item) {
+            item.classList.add('removing');
+            setTimeout(() => {
+                todos = todos.filter(t => t.id !== id);
+                saveTodos();
+                renderTodos();
+            }, 350);
+        }
+    }
+
+    // Event listeners
+    addBtn.addEventListener('click', addTodo);
+    taskInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') addTodo();
+    });
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            filter = btn.dataset.filter;
+            renderTodos();
+        });
+    });
+
+    // Initial render
+    renderTodos();
+</script>
+</body>
+</html>

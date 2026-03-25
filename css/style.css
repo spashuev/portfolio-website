@@ -305,6 +305,15 @@ a:hover {
     font-size: 0.9rem;
 }
 
+.project-links {
+    display: flex;
+    gap: 1.25rem;
+}
+
+.demo-link {
+    color: #16a34a !important;
+}
+
 /* ===== CONTACT ===== */
 .contact-text {
     text-align: center;
