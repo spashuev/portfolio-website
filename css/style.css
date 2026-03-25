@@ -85,6 +85,11 @@ a:hover {
     color: var(--text);
 }
 
+.nav-journal {
+    color: #2563eb !important;
+    font-weight: 600 !important;
+}
+
 .nav-toggle {
     display: none;
     flex-direction: column;
