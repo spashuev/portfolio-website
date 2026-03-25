@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>spashuev — Developer Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">spashuev</a>
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <button class="nav-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero" id="home">
+        <div class="hero-content">
+            <p class="hero-greeting">Hi, I'm</p>
+            <h1 class="hero-name">spashuev</h1>
+            <p class="hero-tagline">I build things with <span class="typed-text"></span><span class="cursor">|</span></p>
+            <div class="hero-buttons">
+                <a href="#projects" class="btn btn-primary">View My Work</a>
+                <a href="https://github.com/spashuev" class="btn btn-secondary" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- About Section -->
+    <section class="section" id="about">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-content">
+                <p>I'm a developer who loves building practical tools and learning new technologies. I work with Python, JavaScript/TypeScript, and web technologies to create things that solve real problems.</p>
+                <p>When I'm not coding, I'm documenting what I learn and sharing my progress publicly. I believe in learning by doing — every project here was built from scratch to solve a problem or learn something new.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="section section-alt" id="skills">
+        <div class="container">
+            <h2 class="section-title">Skills & Tools</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <div class="skill-icon">🐍</div>
+                    <h3>Python</h3>
+                    <p>Scripts, automation, web scraping, APIs</p>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">⚡</div>
+                    <h3>JavaScript</h3>
+                    <p>Interactive UIs, DOM manipulation, Node.js</p>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">🎨</div>
+                    <h3>HTML & CSS</h3>
+                    <p>Responsive layouts, animations, modern CSS</p>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">🔧</div>
+                    <h3>Tools</h3>
+                    <p>Git, VS Code, Terminal, GitHub</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="section" id="projects">
+        <div class="container">
+            <h2 class="section-title">Projects</h2>
+            <div class="projects-grid">
+
+                <div class="project-card">
+                    <div class="project-tag">Python</div>
+                    <h3>Calculator</h3>
+                    <p>A command-line calculator supporting basic arithmetic operations with input validation and error handling.</p>
+                    <div class="project-links">
+                        <a href="https://github.com/spashuev/python-projects/tree/main/01-beginner/calculator" target="_blank">View Code →</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-tag">Python</div>
+                    <h3>Todo CLI</h3>
+                    <p>A terminal-based task manager — add, complete, delete, and list tasks. Data persists to a JSON file.</p>
+                    <div class="project-links">
+                        <a href="https://github.com/spashuev/python-projects/tree/main/01-beginner/todo-cli" target="_blank">View Code →</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-tag">JavaScript</div>
+                    <h3>Color Picker</h3>
+                    <p>An interactive color palette generator — click to generate random palettes and copy hex codes to clipboard.</p>
+                    <div class="project-links">
+                        <a href="https://github.com/spashuev/js-projects/tree/main/01-beginner/color-picker" target="_blank">View Code →</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-tag">JavaScript</div>
+                    <h3>Quiz App</h3>
+                    <p>A multiple-choice quiz with score tracking, timed questions, and a results summary at the end.</p>
+                    <div class="project-links">
+                        <a href="https://github.com/spashuev/js-projects/tree/main/01-beginner/quiz-app" target="_blank">View Code →</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section section-alt" id="contact">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+            <p class="contact-text">Interested in working together or just want to say hi? Feel free to reach out.</p>
+            <div class="contact-links">
+                <a href="https://github.com/spashuev" class="btn btn-primary" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Built by spashuev · 2026</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
